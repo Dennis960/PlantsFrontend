@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import Plant from "./Plant";
 import { Container } from "react-bootstrap";
+import PlantCard from "./PlantCard";
 
 const Plants = () => {
   const [plants, setPlants] = useState([]);
@@ -15,13 +16,13 @@ const Plants = () => {
   }, []);
 
   return (
-    <Container>
+    <Container className="mb-4">
       <center>
         <h1 className="mt-4 mb-4">Plant List</h1>
       </center>
       <div className="d-flex flex-wrap justify-content-center">
         {plants?.map((plant) => (
-          <Plant key={plant.id} plantId={plant.id} showLink={true} />
+          <PlantCard key={plant.id} plantId={plant.id} />
         ))}
       </div>
     </Container>

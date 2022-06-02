@@ -4,9 +4,10 @@ import SinglePlant from "./components/SinglePlant";
 
 import React, { Component } from "react";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import PlantStatsCard from "./components/PlantStatsCard";
+import PlantStatsBar from "./components/PlantStatsBar";
 import { createTheme, ThemeProvider } from "@mui/material";
 import { amber, blue, red, yellow } from "@mui/material/colors";
+import PlantCard from "./components/PlantCard";
 
 const theme = createTheme({
   palette: {
@@ -29,7 +30,7 @@ class App extends Component {
               <Route path="/:plantId" element={<SinglePlant />} />
               <Route
                 path="/testPlants"
-                element={<PlantStatsCard value={30} color="water" size={150} />}
+                element={<PlantCard plantId={1}></PlantCard>}
               />
             </Routes>
           </BrowserRouter>

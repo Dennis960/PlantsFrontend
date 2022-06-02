@@ -2,7 +2,8 @@ import React, { useState, useEffect } from "react";
 import PlantChart from "./PlantChart";
 import { Card } from "react-bootstrap";
 import { useNavigate, useParams } from "react-router-dom";
-import PlantStatsCard from "./PlantStatsCard";
+import PlantStatsBar from "./PlantStatsBar";
+import { Box } from "@mui/material";
 
 const Plant = (props) => {
   let navigate = useNavigate();
@@ -112,11 +113,34 @@ const Plant = (props) => {
                 {new Date(plant.birth).toLocaleDateString()}
               </span>
             </Card.Subtitle>
-            <PlantStatsCard
-              value={30}
-              color="power"
-              size="100"
-            ></PlantStatsCard>
+            <Box
+              sx={{
+                display: "flex",
+                flexDirection: "row",
+                justifyContent: "space-around",
+                width: "100%",
+              }}
+              marginY={3}
+            >
+              <PlantStatsBar
+                value={30}
+                color="power"
+                size={90}
+                text={"Power"}
+              ></PlantStatsBar>
+              <PlantStatsBar
+                value={70}
+                color="sun"
+                size={90}
+                text={"Sun"}
+              ></PlantStatsBar>
+              <PlantStatsBar
+                value={10}
+                color="water"
+                size={90}
+                text={"Water"}
+              ></PlantStatsBar>
+            </Box>
             <PlantChart data={voltages} />
             <PlantChart data={waters} />
             <PlantChart data={suns} />
