@@ -66,8 +66,8 @@ function ProgressWithLabel(props) {
         </Typography>
         <LinearProgress
           {...props}
-          value={progressValue}
           variant="determinate"
+          value={progressValue}
           sx={{
             position: "absolute",
             left: 0,

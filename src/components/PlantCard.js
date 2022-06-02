@@ -7,9 +7,10 @@ import {
   CardContent,
   CardMedia,
   Link,
+  Skeleton,
   Typography,
 } from "@mui/material";
-import { Cake } from "@mui/icons-material";
+import { Cake, AvTimer } from "@mui/icons-material";
 
 export default function PlantCard(props) {
   let navigate = useNavigate();
@@ -22,6 +23,31 @@ export default function PlantCard(props) {
   const [voltage, setVoltage] = useState();
   const [water, setWater] = useState();
   const [sun, setSun] = useState();
+  const [lastMeasureTime, setLastMeasureTime] = useState();
+  const [timeUntilNextMeasure, setTimeUntilNextMeasure] = useState();
+
+  const timeBetweenMeasuresMs = 30 * 60 * 1000;
+
+  let nextMeasureInterval;
+
+  useEffect(() => {
+    if (lastMeasureTime) {
+      if (nextMeasureInterval) {
+        clearInterval(nextMeasureInterval);
+      }
+      nextMeasureInterval = setInterval(() => {
+        let timeSinceLastMeasureMs = new Date().valueOf() - lastMeasureTime;
+        let timeUntilNextMeasureDate = new Date(
+          timeBetweenMeasuresMs - timeSinceLastMeasureMs
+        );
+        setTimeUntilNextMeasure(
+          `${timeUntilNextMeasureDate.getMinutes()}:${String(
+            timeUntilNextMeasureDate.getSeconds()
+          ).padStart(2, "0")}`
+        );
+      }, 1000);
+    }
+  }, [lastMeasureTime]);
 
   useEffect(() => {
     // check if plant with id exists:
@@ -56,9 +82,11 @@ export default function PlantCard(props) {
             .then((res) => res.json())
             .then((data) => {
               let maxWater = Math.max(...data.data.map((o) => o.water));
-              let currentWater = data.data.reduce(function (prev, current) {
+              let currentWaterObj = data.data.reduce(function (prev, current) {
                 return prev.date > current.date ? prev : current;
-              }).water;
+              });
+              setLastMeasureTime(currentWaterObj.date);
+              let currentWater = currentWaterObj.water;
               fetch(
                 `https://plants.hoppingadventure.com/api/plants/${id}/referenceWaters`
               )
@@ -115,22 +143,43 @@ export default function PlantCard(props) {
             >
               {plant.name}
             </Typography>
-            <Typography sx={{ my: 1 }}>
-              <Box
-                sx={{
-                  display: "flex",
-                  flexDirection: "row",
-                  justifyContent: "start",
-                  alignItems: "flex-end",
-                  my: 1,
-                }}
-              >
-                <Cake height="100%"></Cake>
+            <Box
+              sx={{
+                display: "flex",
+                flexDirection: "row",
+                justifyContent: "start",
+                alignItems: "flex-end",
+                my: 1,
+              }}
+            >
+              <Cake height="100%"></Cake>
+              <Typography sx={{ lineHeight: "100%", mx: 1 }}>
+                {new Date(plant.birth).toLocaleDateString()}
+              </Typography>
+            </Box>
+            <Box
+              sx={{
+                display: "flex",
+                flexDirection: "row",
+                justifyContent: "start",
+                alignItems: "flex-end",
+                my: 1,
+              }}
+            >
+              <AvTimer height="100%"></AvTimer>
+              {timeUntilNextMeasure ? (
                 <Typography sx={{ lineHeight: "100%", mx: 1 }}>
-                  {new Date(plant.birth).toLocaleDateString()}
+                  {timeUntilNextMeasure}
                 </Typography>
-              </Box>
-            </Typography>
+              ) : (
+                <Skeleton
+                  variant="text"
+                  width={50}
+                  height="100%"
+                  sx={{ mx: 1 }}
+                />
+              )}
+            </Box>
             <Box
               sx={{
                 display: "flex",
@@ -140,24 +189,28 @@ export default function PlantCard(props) {
                 my: 4,
               }}
             >
-              <PlantStatsBar
-                value={voltage}
-                color="power"
-                size={90}
-                text={"Power"}
-              ></PlantStatsBar>
-              <PlantStatsBar
-                value={sun}
-                color="sun"
-                size={90}
-                text={"Sun"}
-              ></PlantStatsBar>
-              <PlantStatsBar
-                value={water}
-                color="water"
-                size={90}
-                text={"Water"}
-              ></PlantStatsBar>
+              {voltage && sun && water && (
+                <>
+                  <PlantStatsBar
+                    value={voltage}
+                    color="power"
+                    size={90}
+                    text={"Power"}
+                  />
+                  <PlantStatsBar
+                    value={sun}
+                    color="sun"
+                    size={90}
+                    text={"Sun"}
+                  />
+                  <PlantStatsBar
+                    value={water}
+                    color="water"
+                    size={90}
+                    text={"Water"}
+                  />
+                </>
+              )}
             </Box>
             <Link
               onClick={() => {
