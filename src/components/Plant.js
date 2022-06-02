@@ -122,7 +122,7 @@ const Plant = (props) => {
               }}
               marginY={3}
             >
-              <PlantStatsBar
+              {/* <PlantStatsBar
                 value={30}
                 color="power"
                 size={90}
@@ -139,7 +139,7 @@ const Plant = (props) => {
                 color="water"
                 size={90}
                 text={"Water"}
-              ></PlantStatsBar>
+              ></PlantStatsBar> */}
             </Box>
             <PlantChart data={voltages} />
             <PlantChart data={waters} />
