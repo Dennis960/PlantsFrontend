@@ -68,9 +68,9 @@ export default function PlantCard(props) {
               let curVoltage = data.data.reduce(function (prev, current) {
                 return prev.date > current.date ? prev : current;
               }).voltage;
-              // 3.2 V: battery full, 2.5 V: not enough power for esp
-              let minVoltage = 2.5;
-              let maxVoltage = 3.2;
+              // 3.0 V: battery full, 2.0 V: not enough power for esp
+              let minVoltage = 2.0;
+              let maxVoltage = 3.0;
               let voltagePercent =
                 (curVoltage - minVoltage) / (maxVoltage - minVoltage);
               setVoltage(100 * voltagePercent);
